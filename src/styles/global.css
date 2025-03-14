@@ -10,3 +10,18 @@ a,
   @apply bg-clip-text text-transparent;
   @apply bg-gradient-to-br from-indigo-500 via-fuchsia-500 to-pink-500;
 }
+.aquatic-gradient-text {
+  background: linear-gradient(
+    to bottom,
+    #8ee3ff,
+    #2cc1ff,
+    #1e90ff,
+    #1a4bff,
+    #0a1f7a
+  );
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-fill-color: transparent;
+  text-shadow: 0 0 15px rgba(0, 195, 255, 0.3);
+}
