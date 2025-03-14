@@ -1,13 +1,14 @@
 ---
 import "@fontsource-variable/inter";
-import Compatibility from "~/components/compatibility.astro";
-import Features from "~/components/features.astro";
-import Footer from "~/components/footer.astro";
-import Header from "~/components/header.astro";
-import Intro from "~/components/intro.astro";
-import Showcase from "~/components/showcase.astro";
-import Splash from "~/components/splash.astro";
-import "~/styles/index.css";
+import Compatibility from "@/components/compatibility.astro";
+import Features from "@/components/features.astro";
+import Footer from "@/components/footer.astro";
+import Header from "@/components/header.astro";
+import Intro from "@/components/intro.astro";
+import Showcase from "@/components/showcase.astro";
+import Splash from "@/components/splash.astro";
+import TubingBookingForm from "@/components/tubing-booking-form";
+import "@/styles/index.css";
 
 const { generator, site } = Astro;
 const image = new URL("social.jpg", site);
@@ -27,7 +28,7 @@ const description =
     <meta name="description" content={description} />
 
     <!-- social media -->
-    <meta property="og:title" content="Astro" />
+    <meta property="og:title" content="Arenal Tubing" />
     <meta property="og:type" content="website" />
     <meta property="og:description" content={description} />
     <meta property="og:image" content={image} />
@@ -63,5 +64,6 @@ const description =
   >
     <Header />
     <Splash />
+    <TubingBookingForm />
   </body>
 </html>

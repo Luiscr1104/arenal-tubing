@@ -4,6 +4,7 @@ import { useState } from "react";
 import { CalendarIcon, Users, Clock, MapPin, CreditCard } from "lucide-react";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
+import ContentSection from "@/components/content-section.astro";
 
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -102,8 +103,11 @@ export default function TubingBookingForm() {
   }
 
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-b from-blue-950 to-blue-800 p-4 md:p-8">
-      <div className="mx-auto w-full max-w-4xl">
+    <div
+      className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-b from-blue-950 to-blue-800 p-4 md:p-8"
+      id="reserva"
+    >
+      <div className="mx-auto mt-28 w-full max-w-4xl">
         <div className="mb-8 text-center">
           <h1 className="mb-4 font-bold text-cyan-300 text-4xl md:text-6xl">
             ¡Reserva Tu Aventura!
