@@ -14,10 +14,13 @@ const navItems: Array<NavItem> = [
   id="page-header"
   class="absolute bottom-0 z-20 flex w-full items-center justify-between border-b border-transparent px-8 py-4 text-white"
 >
-  <a class="flex items-center gap-3 hover:!text-default" href="#">
+  <a
+    class="flex items-center gap-3 rounded bg-black/30 px-3 py-1 hover:!text-default"
+    href="#"
+  >
     <h1 class="sr-only">Arenal Tubing</h1>
     <Icon name="logomark" class="size-10" />
-    <span class="hidden font-semibold text-lg sm:block">
+    <span class="hidden font-semibold text-white text-lg sm:block">
       La Fortuna River Tubing
     </span>
   </a>
@@ -29,7 +32,11 @@ const navItems: Array<NavItem> = [
           {
             navItems.map(({ title, url }) => (
               <li>
-                <a class="text-sm" href={url}>
+                <a
+                  class="font-medium text-white transition-colors duration-200 text-sm hover:text-cyan-300"
+                  href={url}
+                  style="text-shadow: 0 0 8px rgba(0,0,0,0.7);"
+                >
                   {title}
                 </a>
               </li>
@@ -37,6 +44,7 @@ const navItems: Array<NavItem> = [
           }
         </ul>
       </nav>
+
       <button
         id="open-nav-button"
         type="button"

@@ -13,15 +13,15 @@ a,
 .aquatic-gradient-text {
   background: linear-gradient(
     to bottom,
-    #8ee3ff,
-    #2cc1ff,
-    #1e90ff,
-    #1a4bff,
-    #0a1f7a
+    #ffffff,
+    #a8eaff,
+    #3cc8ff,
+    #0096ff,
+    #0066cc
   );
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
   text-fill-color: transparent;
-  text-shadow: 0 0 15px rgba(0, 195, 255, 0.3);
+  text-shadow: 0 0 12px rgba(0, 102, 204, 0.4);
 }

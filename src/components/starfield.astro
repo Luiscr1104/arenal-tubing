@@ -5,17 +5,19 @@
 <script>
   import invariant from "tiny-invariant";
 
-  const COUNT = 400; // Reducido para que las burbujas sean menos densas
-  const SPEED = 0.05; // Reducido para simular movimiento más lento en agua
+  const COUNT = 800;
+  const SPEED = 0.2;
 
-  class Bubble {
+  class RiverParticle {
     x: number;
     y: number;
     z: number;
     xPrev: number;
     yPrev: number;
-    radius: number;
+    size: number;
     opacity: number;
+    speed: number;
+    color: string;
 
     constructor(x = 0, y = 0, z = 0) {
       this.x = x;
@@ -23,8 +25,13 @@
       this.z = z;
       this.xPrev = x;
       this.yPrev = y;
-      this.radius = Math.random() * 4 + 1; // Tamaño variable para las burbujas
-      this.opacity = Math.random() * 0.5 + 0.1; // Opacidad variable para efecto de profundidad
+      this.size = Math.random() * 2 + 0.5;
+      this.opacity = Math.random() * 0.7 + 0.3;
+      this.speed = (Math.random() * 0.5 + 0.5) * SPEED;
+
+      // Tonos azules para las partículas del río
+      const blueShade = Math.floor(Math.random() * 55) + 200;
+      this.color = `rgba(255, 255, ${blueShade}, ${this.opacity})`;
     }
 
     update(width: number, height: number, speed: number) {
@@ -32,47 +39,36 @@
       this.yPrev = this.y;
       this.z += speed * 0.0675;
 
-      // Movimiento zigzagueante sutil para simular burbujas en agua
-      this.x += Math.sin(this.y / 50) * 0.5;
-      this.y -= this.z * speed * 2; // Burbujas suben en el agua
+      // Movimiento principalmente horizontal (de izquierda a derecha)
+      this.x += speed * 2;
 
-      // Reiniciar burbujas cuando lleguen a la parte superior
-      if (this.y < -height / 2) {
-        this.x = Math.random() * width - width / 2;
-        this.y = height / 2 + Math.random() * 100; // Aparecen desde abajo
+      // Pequeño movimiento ondulante vertical para simular corrientes
+      this.y += Math.sin(this.x * 0.02) * 0.3;
+
+      // Si sale por la derecha, reaparece por la izquierda
+      if (this.x > width) {
+        this.x = 0;
+        this.y = Math.random() * height;
         this.xPrev = this.x;
         this.yPrev = this.y;
         this.z = 0;
-        this.radius = Math.random() * 4 + 1;
-        this.opacity = Math.random() * 0.5 + 0.1;
       }
     }
 
     draw(ctx: CanvasRenderingContext2D) {
-      // Dibujar burbujas como círculos con contorno y relleno semitransparente
+      ctx.strokeStyle = this.color;
+      ctx.lineWidth = this.size * (1 + this.z * 0.1);
       ctx.beginPath();
-      ctx.arc(this.x, this.y, this.radius * (1 + this.z * 0.1), 0, Math.PI * 2);
-      ctx.fillStyle = `rgba(255, 255, 255, ${this.opacity * 0.5})`;
-      ctx.strokeStyle = `rgba(255, 255, 255, ${this.opacity})`;
-      ctx.lineWidth = 0.5;
-      ctx.fill();
+      ctx.moveTo(this.x, this.y);
+      ctx.lineTo(this.xPrev, this.yPrev);
       ctx.stroke();
-
-      // Pequeño destello para simular reflejo de luz en la burbuja
-      ctx.beginPath();
-      ctx.arc(
-        this.x - this.radius * 0.3,
-        this.y - this.radius * 0.3,
-        this.radius * 0.2,
-        0,
-        Math.PI * 2,
-      );
-      ctx.fillStyle = `rgba(255, 255, 255, ${this.opacity * 2})`;
-      ctx.fill();
     }
   }
 
-  const bubbles = Array.from({ length: COUNT }, () => new Bubble(0, 0, 0));
+  const particles = Array.from(
+    { length: COUNT },
+    () => new RiverParticle(0, 0, 0),
+  );
   let rafId = 0;
 
   const canvas = document.querySelector(
@@ -98,27 +94,44 @@
     canvas.style.height = `${height}px`;
     ctx.scale(dpr, dpr);
 
-    for (const bubble of bubbles) {
-      bubble.x = Math.random() * width - width / 2;
-      bubble.y = Math.random() * height;
-      bubble.z = 0;
+    // Distribuir partículas
+    for (const particle of particles) {
+      particle.x = Math.random() * width;
+      particle.y = Math.random() * height;
+      particle.z = 0;
+      particle.xPrev = particle.x;
+      particle.yPrev = particle.y;
     }
 
-    ctx.translate(width / 2, height / 2);
-    ctx.fillStyle = "rgba(0, 60, 120, 0.4)"; // Azul marino semitransparente para efecto acuático
     rafId = requestAnimationFrame(frame);
   }
+
   function frame() {
     invariant(ctx, "canvas context should not be null");
     const { clientWidth: width, clientHeight: height } = container;
 
-    // Limpiar pantalla con color azul marino
-    ctx.fillStyle = "rgba(0, 60, 120, 0.4)";
-    ctx.fillRect(-width / 2, -height / 2, width, height);
+    // Fondo azul semitransparente para simular agua
+    ctx.fillStyle = "rgba(30, 80, 150, 0.3)";
+    ctx.fillRect(0, 0, width, height);
 
-    for (const bubble of bubbles) {
-      bubble.update(width, height, SPEED);
-      bubble.draw(ctx);
+    // Actualizar y dibujar partículas
+    for (const particle of particles) {
+      particle.update(width, height, SPEED);
+      particle.draw(ctx);
+    }
+
+    // Efecto adicional: líneas ondulantes horizontales sutiles para simular corrientes
+    for (let y = 0; y < height; y += 30) {
+      ctx.beginPath();
+      ctx.moveTo(0, y);
+
+      for (let x = 0; x < width; x += 20) {
+        const yOffset = Math.sin(x * 0.03 + performance.now() * 0.001) * 3;
+        ctx.lineTo(x, y + yOffset);
+      }
+
+      ctx.strokeStyle = "rgba(255, 255, 255, 0.05)";
+      ctx.stroke();
     }
 
     rafId = requestAnimationFrame(frame);
